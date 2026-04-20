@@ -1,0 +1,4 @@
+
+<launch>
+    <node pkg="topics_pkg" type="ex.py" name="subscriber" output="screen"/>
+</launch>
