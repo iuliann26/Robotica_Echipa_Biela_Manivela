@@ -1,33 +1,30 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/env python
 import rospy
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
-class ObstacleAvoidance:
-    def __init__(self):
-        rospy.init_node('obstacle_avoidance')
+def callback(msg):
+    num = len(msg.ranges)
+    
+    fata = msg.ranges[num // 2]
+    dreapta = msg.ranges[0]
+    stanga = msg.ranges[num - 1]
 
-        self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-        self.sub = rospy.Subscriber('/scan', LaserScan, self.callback)
-        self.cmd = Twist()
+    move = Twist()
 
-    def callback(self, msg):
-       
-        front_distance = min(min(msg.ranges[0:10]), min(msg.ranges[-10:]))
+    
+    if fata > 1.0:
+        move.linear.x = 0.2
+    elif fata < 1.0 or dreapta < 1.0:
+        move.angular.z = 0.5  
+    elif stanga < 1.0:
+        move.angular.z = -0.5 # 
 
-        if front_distance < 0.5:
-            self.cmd.linear.x = 0.0
-            self.cmd.angular.z = 0.5
-        else:
-            self.cmd.linear.x = 0.2
-            self.cmd.angular.z = 0.0
+    
+    pub.publish(move)
 
-        self.pub.publish(self.cmd)
+rospy.init_node('subscriber')
+sub = rospy.Subscriber('/scan', LaserScan, callback)
+pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 
-    def run(self):
-        rospy.spin()
-
-if __name__ == '__main__':
-    node = ObstacleAvoidance()
-    node.run()
+rospy.spin()
