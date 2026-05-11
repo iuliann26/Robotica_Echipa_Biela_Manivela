@@ -1,4 +1,6 @@
-
 <launch>
-    <node pkg="topics_pkg" type="ex.py" name="subscriber" output="screen"/>
+  <node pkg="topicuri" type="client.py" name="triangle_client" output="screen">
+    <param name="side" value="1.5"/>
+    <param name="repetitions" value="1"/>
+  </node>
 </launch>

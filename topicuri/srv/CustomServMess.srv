@@ -1,3 +1,4 @@
-in32 duration
+float64 side
+int32 repetitions
 ---
-bool succes
+bool success
